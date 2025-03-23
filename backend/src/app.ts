@@ -3,6 +3,7 @@ import morgan from "morgan";
 import accountRoutes from "@/routes/account";
 import cookieParser from "cookie-parser";
 import { validateAuthToken } from "./middlewares/validateAuthToken";
+import rubricRoutes from "@/routes/rubrics";
 
 const app = express();
 
@@ -22,5 +23,7 @@ app.get("/", (_req: Request, res: Response) => {
 });
 
 app.use("/account", accountRoutes);
+
+app.use("/rubrics", rubricRoutes);
 
 export default app;

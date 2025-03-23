@@ -71,3 +71,56 @@ export const rubricCreate = async (req: Request, res: Response): Promise<void> =
     }
     return;
 };
+
+export const rubricGet = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+
+        // Validate ID format
+        if (!Types.ObjectId.isValid(id)) {
+            res.status(400).json({ error: "Invalid rubric ID format" });
+            return;
+        }
+
+        // Fetch the rubric and populate related fields
+        const rubric = await Rubric.findById(id)
+            .populate("parameters") // Populate parameter details
+            .populate("keywords") // Populate keyword details
+
+        if (!rubric) {
+            res.status(404).json({ error: "Rubric not found" });
+            return;
+        }
+
+        res.status(200).json(rubric);
+    } catch (error) {
+        res.status(500).json({ error: "Internal server error" });
+        console.log(error);
+    }
+    return;
+};
+
+export const rubricDelete = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+
+        // Validate ID format
+        if (!Types.ObjectId.isValid(id)) {
+            res.status(400).json({ error: "Invalid rubric ID format" });
+            return;
+        }
+
+        // Find and delete the rubric
+        const deletedRubric = await Rubric.findByIdAndDelete(id);
+
+        if (!deletedRubric) {
+            res.status(404).json({ error: "Rubric not found" });
+            return;
+        }
+
+        res.status(200).json({ message: "Rubric deleted successfully", rubric: deletedRubric });
+    } catch (error) {
+        res.status(500).json({ error: "Internal server error" });
+    }
+    return;
+};

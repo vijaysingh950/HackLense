@@ -5,8 +5,11 @@ import eventRoutes from "@/routes/event";
 import rubricRoutes from "@/routes/rubrics";
 import cookieParser from "cookie-parser";
 import { validateAuthToken } from "./middlewares/validateAuthToken";
+import cors from "cors";
 
 const app = express();
+
+app.use(cors());
 
 app.use(morgan("dev"));
 

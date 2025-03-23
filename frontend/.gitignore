@@ -1,5 +1,4 @@
 **/node_modules
 .vscode
 **/.vscode
-.gitignore
-test_script.py
+.env

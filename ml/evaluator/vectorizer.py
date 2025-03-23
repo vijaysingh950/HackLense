@@ -15,5 +15,5 @@ class Vectorizer:
   
   def main(self):
     corpus = self.join_preproc_words(self.words)
-    vector = self.TF_IDF(corpus, self.parameter)
-    return vector
+    semdesc_mat, golden_mat = self.TF_IDF(corpus, self.parameter)
+    return semdesc_mat, golden_mat

@@ -4,36 +4,47 @@ from golden_Vectorizer import GoldenVectorizer
 from vectorizer import Vectorizer
 from comperator import Comperator
 
-class Main:
+class GoldenMatrix:
   def __init__(self):
-    pass
-  
-  def generate_golden_matrix(self, parameter):
-    g_vec = GoldenVectorizer(parameter).main()
+    self.db = DataBase()
 
-  def main(self, text, parameter):
-    # create databse object for utility
-    db = DataBase()
+  def generate_golden_matrices(self, parameter: str) -> None:
+    GoldenVectorizer(parameter).main()
 
-    # preprocessing
-    pre_proc = PreProcessor(text).main()
-    # vectorization
-    semDesc_mat, golden_mat = Vectorizer(pre_proc, parameter).main()
+  def init(self):
+    for parameter in self.db.getParemList():
+      self.generate_golden_matrices(parameter)
 
-    # temp storage
-    # db.storeSemDescMatrix('semDesc_1', semDesc_mat)
+class Evaluator:
+  def __init__(self, sem_desc_dict: dict):
+    self.sem_desc_dict = sem_desc_dict
+    self.db = DataBase()
 
-    # comparision
-    cmp_impact = Comperator().main(semDesc_mat, golden_mat)
+  def evaluate(self, sem_desc):
+    scores = {}
+    for param in self.db.getParemList():
+      pre_proc = PreProcessor(sem_desc).main() # preprocessed
+      sem_desc_mat, golden_mat = Vectorizer(pre_proc, param).main() # vectorised
+      scores[param] = Comperator().main(sem_desc_mat, golden_mat) # score
+
+      print(f"Score of {param} :", scores[param]) # temp
     
-    print(cmp_impact)
+    return scores
+    
+  def combineScore(self, scores: dict):
+    s = 0
+    for submi_type in scores:
+      for param in scores[submi_type]:
+        s += scores[submi_type][param]
+    
+    return s
 
-text = """The document presents a proposal for a smart waste management system aimed at optimizing waste collection in urban areas. 
-It introduces IoT-based sensors to monitor waste levels in bins and proposes a mobile application for real-time tracking. 
-The proposal highlights potential environmental benefits, including reduced waste overflow and efficient routing for garbage collection vehicles. 
-The document includes a detailed cost analysis, implementation timeline, and scalability options for expanding the system to multiple regions. 
-Additionally, it addresses potential challenges such as sensor maintenance and data security."""
+  def run(self):
+    scores = {}
 
-run = Main()
-# run.generate_golden_matrix('impact')
-run.main(text, 'impact')
+    for submi_type in self.sem_desc_dict:
+      scores[submi_type] = self.evaluate(self.sem_desc_dict[submi_type])
+    
+    final_score = self.combineScore(scores)
+
+    return final_score

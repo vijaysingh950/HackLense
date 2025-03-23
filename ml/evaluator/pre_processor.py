@@ -23,8 +23,8 @@ class PreProcessor:
     self.lemmatizer = WordNetLemmatizer()
     self.stop_words = set(stopwords.words('english'))
 
-  def tokenize(self, text):
-    return self.word_tokenize(text)
+  def tokenize(self):
+    return self.word_tokenize(self.text)
 
   def lemmatize(self, tokkens):
     return [self.lemmatizer.lemmatize(tok, pos='v') for tok in tokkens]
@@ -36,7 +36,7 @@ class PreProcessor:
     return [word for word in filter_words if word not in string.punctuation]
 
   def main(self):
-    tokkens = self.tokenize(self.text)
+    tokkens = self.tokenize()
     lematized = self.lemmatize(tokkens)
     filter_words = self.removeStopWords(lematized)
     preproc_words = self.preproc(filter_words)

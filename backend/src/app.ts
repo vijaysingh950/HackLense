@@ -3,8 +3,11 @@ import morgan from "morgan";
 import accountRoutes from "@/routes/account";
 import cookieParser from "cookie-parser";
 import { validateAuthToken } from "./middlewares/validateAuthToken";
+import cors from "cors";
 
 const app = express();
+
+app.use(cors());
 
 app.use(morgan("dev"));
 

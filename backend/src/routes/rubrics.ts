@@ -1,12 +1,10 @@
 import { Router } from "express";
-import { rubricCreate, rubricGet, rubricDelete } from "@/controllers/rubrics";
+import { createRubric, getRubrics } from "@/controllers/rubrics";
 
 const router = Router();
 
-router.post("/", rubricCreate); // Create a new rubric
+router.post("/", createRubric);
 
-router.get("/:id", rubricGet); // Get a rubric by ID
-
-router.delete("/:id", rubricDelete); // Delete a rubric by ID
+router.get("/:id", getRubrics);
 
 export default router;

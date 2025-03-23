@@ -1,126 +1,55 @@
-import Keyword from "@/schema/keywords";
-import Parameter from "@/schema/parameters";
-import Rubric from "@/schema/rubrics";
-import User from "@/schema/users";
 import { Request, Response } from "express";
-import { Types } from "mongoose";
+import Rubric from "@/schema/rubrics";
+import { Rubric as I_Rubric } from "@/types/rubric";
+import { findUserByEmail } from "@/services/dbService";
 
-export const rubricCreate = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { title, description, parameters, keywords, createdBy } = req.body;
+export async function createRubric(req: Request, res: Response) {
+  const rubric: I_Rubric = req.body;
+  const createdBy = req.user?.email;
 
-        // Validate required fields
-        if (!title || !createdBy) {
-            res.status(400).json({ error: "Title and CreatedBy are required" });
-            return;
-        }
-
-        // createdBy is considered to be username
-        const createdByUser = await User.findOne({ username: createdBy });
-        if (!createdByUser) {
-            res.status(404).json({ error: "CreatedBy user not found" });
-            return;
-        }
-
-        let parameterIds: Types.ObjectId[] = [];
-        if (Array.isArray(parameters) && parameters.length > 0) {
-            const createdParams = await Parameter.insertMany(
-                parameters.map(param => ({
-                    name: param.name,
-                    description: param.description,
-                    weight: param.weight,
-                    status: param.status || "active",
-                    createdBy: createdByUser._id
-                }))
-            );
-            parameterIds = createdParams.map(param => param._id);
-        }
-
-        let keywordIds: Types.ObjectId[] = [];
-        if (Array.isArray(keywords) && keywords.length > 0) {
-            const createdKeywords = await Keyword.insertMany(
-                keywords.map(keyword => ({
-                    name: keyword.name,
-                    weight: keyword.weight,
-                    category: keyword.category,
-                    createdBy: createdByUser._id
-                }))
-            );
-            keywordIds = createdKeywords.map(keyword => keyword._id);
-        }
-
-        // Create a new rubric instance
-        const newRubric = new Rubric({
-            title,
-            description,
-            parameters: parameterIds,
-            keywords: keywordIds,
-            createdBy: createdByUser._id
-        });
-
-        // Save the rubric to the database
-        const savedRubric = await newRubric.save();
-        if (!savedRubric) {
-            res.status(500).json({ error: "Failed to save rubric" });
-            return;
-        }
-        res.status(201).json({ message: "Rubric created successfully", rubric: savedRubric });
-    } catch (error) {
-        res.status(500).json({ error: "Internal server error" });
-        console.log(error);
-    }
+  if (!createdBy || !rubric) {
+    res.status(400).json({ error: "Invalid data" });
     return;
-};
+  }
 
-export const rubricGet = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { id } = req.params;
+  try {
+    // fetch createdBy id from database
+    const createdById = await findUserByEmail(createdBy);
 
-        // Validate ID format
-        if (!Types.ObjectId.isValid(id)) {
-            res.status(400).json({ error: "Invalid rubric ID format" });
-            return;
-        }
-
-        // Fetch the rubric and populate related fields
-        const rubric = await Rubric.findById(id)
-            .populate("parameters") // Populate parameter details
-            .populate("keywords") // Populate keyword details
-
-        if (!rubric) {
-            res.status(404).json({ error: "Rubric not found" });
-            return;
-        }
-
-        res.status(200).json(rubric);
-    } catch (error) {
-        res.status(500).json({ error: "Internal server error" });
-        console.log(error);
+    if (!createdById) {
+      throw new Error("User not found");
     }
+    rubric.createdBy = createdById._id;
+
+    const newRubric = await Rubric.create(rubric);
+
+    res
+      .status(201)
+      .json({ message: "Rubric created successfully", rubric: newRubric });
     return;
-};
+  } catch (error) {
+    res.status(500).json({ error: error });
+    return;
+  }
+}
 
-export const rubricDelete = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { id } = req.params;
+export async function getRubrics(req: Request, res: Response) {
+  const rubric_id = req.params.id;
+  if (!rubric_id) {
+    res.status(400).json({ error: "Invalid Rubric Id" });
+    return;
+  }
 
-        // Validate ID format
-        if (!Types.ObjectId.isValid(id)) {
-            res.status(400).json({ error: "Invalid rubric ID format" });
-            return;
-        }
-
-        // Find and delete the rubric
-        const deletedRubric = await Rubric.findByIdAndDelete(id);
-
-        if (!deletedRubric) {
-            res.status(404).json({ error: "Rubric not found" });
-            return;
-        }
-
-        res.status(200).json({ message: "Rubric deleted successfully", rubric: deletedRubric });
-    } catch (error) {
-        res.status(500).json({ error: "Internal server error" });
+  try {
+    const rubrics = await Rubric.find({ _id: rubric_id });
+    if (!rubrics || rubrics.length === 0) {
+      res.status(404).json({ error: "Rubric not found" });
+      return;
     }
+    res.status(200).json(rubrics);
     return;
-};
+  } catch (error) {
+    res.status(500).json({ error: error });
+    return;
+  }
+}

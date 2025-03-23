@@ -75,7 +75,7 @@ const LoginPage = () => {
         if (data.user !== null || data.user !== undefined) {
           // Redirect to dashboard or appropriate page
           if (data.user.role === "user") {
-            navigate("/");
+            navigate("/student-dashboard");
           } else if (data.user.role === "teacher") {
             navigate("/contact");
           } else {

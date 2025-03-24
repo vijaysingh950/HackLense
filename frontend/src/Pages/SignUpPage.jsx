@@ -126,6 +126,8 @@ const SignUpPage = () => {
   };
 
   return (
+    <>
+    <Navbar />
     <div className="signup-page-container">
       <div className="signup-card-container">
         <div className="signup-header">
@@ -321,6 +323,7 @@ const SignUpPage = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

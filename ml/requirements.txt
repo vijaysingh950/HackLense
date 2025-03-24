@@ -2,3 +2,7 @@ flask
 scipy
 scikit-learn
 nltk
+speechrecognition
+moviepy
+pytesseract
+opencv-python

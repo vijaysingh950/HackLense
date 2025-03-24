@@ -1,7 +1,12 @@
+import os
 from flask import Flask, request, jsonify
 from evaluator import Evaluator
+from extraction import process_video, process_audio, process_image, process_text_file
 
 app = Flask(__name__)
+
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+UPLOAD_FOLDER = os.path.join(BASE_DIR, "shared", "uploads")
 
 @app.route("/")
 def home():
@@ -26,6 +31,49 @@ def evaluate():
     except Exception as e:
         print(e)
         return jsonify({"error": str(e)}), 500
+
+
+@app.route('/extract', methods=['POST'])
+def extract_content():
+    """API to extract semantic descriptions from uploaded files."""
+    try:
+        if not os.path.isdir(UPLOAD_FOLDER):
+            return jsonify({"error": "Upload folder does not exist"}), 400
+
+        files = os.listdir(UPLOAD_FOLDER)
+        if not files:
+            return jsonify({"error": "No files found in the upload folder"}), 400
+
+        data = request.get_json()
+        filename = data.get("filename") # example: idea.txt
+
+        if not filename:
+            return jsonify({"error": "No file found with provided name"}), 400
+
+        file_path = os.path.join(UPLOAD_FOLDER, filename)
+        if not os.path.exists(file_path):
+            return jsonify({"error": "File not found"}), 404
+
+        semantic_descriptions = {}
+        
+        # Process the file based on its type
+        ext = os.path.splitext(file_path)[-1].lower()
+        if ext in [".mp4", ".avi", ".mov"]:  # Video files
+            semantic_descriptions = process_video(file_path)
+        elif ext in [".wav", ".mp3", ".aac"]:  # Audio files
+            semantic_descriptions = process_audio(file_path)
+        elif ext in [".jpg", ".jpeg", ".png"]:  # Image files
+            semantic_descriptions = process_image(file_path)
+        elif ext == ".txt":  # Text files
+            semantic_descriptions = process_text_file(file_path)
+        else:
+            return jsonify({"error": "Unsupported file format"}), 400
+
+    except Exception as e:
+        print(e)
+        return jsonify({"error": str(e)}), 500
+
+    return jsonify(semantic_descriptions), 200
 
 
 if __name__ == "__main__":

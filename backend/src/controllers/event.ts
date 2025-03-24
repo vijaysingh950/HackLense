@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import Event from "@/schema/events";
 import { Event as EventInterface } from "@/types/event";
-import Rubric from "@/schema/rubrics";
 import { findUserByEmail } from "@/services/dbService";
 
 export async function createEvent(req: Request, res: Response) {
@@ -25,7 +24,7 @@ export async function createEvent(req: Request, res: Response) {
 
   try {
     // Fetching createdBy from the cookie
-    const createdBy = req?.user?.email;
+    const createdBy = req.user?.email;
     if (!createdBy || createdBy === null) {
       res.status(404).json({ message: "User not found" });
       return;

@@ -53,6 +53,15 @@ def process_image(image_path):
     except Exception as e:
         semantic_descriptions["image"] = f"Error processing image: {e}"
 
+def process_text_file(text_file):
+    """Read text from a .txt file and store it."""
+    try:
+        with open(text_file, "r", encoding="utf-8") as file:
+            content = file.read().strip()
+        semantic_descriptions["text"] = content
+    except Exception as e:
+        semantic_descriptions["text"] = f"Error reading text file: {e}"
+
 def process_text(text):
     """Save direct text input into the JSON output."""
     semantic_descriptions["text"] = text
@@ -70,8 +79,10 @@ if __name__ == "__main__":
                 process_video(arg)
             elif ext in [".wav", ".mp3", ".aac"]:  # Audio files
                 process_audio(arg)
-            elif ext in [".jpg", ".jpeg", ".png", ".bmp"]:  # Image files
+            elif ext in [".jpg", ".jpeg", ".png"]:  # Image files
                 process_image(arg)
+            elif ext == ".txt":  # Text files
+                process_text_file(arg)
         else:  # If it's not a file, assume it's text
             process_text(arg)
 

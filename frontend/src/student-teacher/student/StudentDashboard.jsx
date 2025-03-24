@@ -28,7 +28,7 @@ function StudentDashboard() {
 
   return (
     <div className="app">
-      {/* <Navbar notifications={notifications} /> */}
+      <Navbar notifications={notifications} />
       {/* The SideCalendar will be fixed (using its own CSS) */}
       
       <div className="main-content">

@@ -926,9 +926,9 @@ const Dashboard = ({ addNotification }) => {
           </div>
         </div>
       </div>
-      <div className='dashboard-content'>
+      {/* <div className='dashboard-content'>
         <SideCalendar assignments={assignments} />
-      </div>
+      </div> */}
     </div>
   );
 };

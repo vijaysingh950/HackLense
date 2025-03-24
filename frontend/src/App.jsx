@@ -16,7 +16,8 @@ function App() {
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/teacher-dashboard" element={<TeacherDashboard  />} />
+        <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
+        <Route path="/upload-problem" element={<UploadProblem/>}></Route>
         <Route path="/student-dashboard" element={<StudentDashboard />} />
         <Route path="/login-page" element={<LoginPage />} />
         <Route path="/signup-page" element={<SignUpPage />} />

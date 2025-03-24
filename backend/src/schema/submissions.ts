@@ -29,21 +29,26 @@ const SubmissionSchema = new Schema({
     ref: "rubrics",
     required: true,
   },
-  scores: [
-    {
-      parameter: {
-        type: Schema.Types.ObjectId,
-        ref: "parameters",
-        required: true,
-      },
-      score: {
-        type: Number,
-        required: true,
-        min: 0,
-        max: 10,
-      },
-    },
-  ],
+  event: {
+    type: Schema.Types.ObjectId,
+    ref: "events",
+    required: true,
+  },
+  // scores: [
+  //   {
+  //     parameter: {
+  //       type: Schema.Types.ObjectId,
+  //       ref: "parameters",
+  //       required: true,
+  //     },
+  //     score: {
+  //       type: Number,
+  //       required: true,
+  //       min: 0,
+  //       max: 10,
+  //     },
+  //   },
+  // ],
   finalScore: {
     type: Number,
     min: 0,

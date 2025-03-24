@@ -67,29 +67,21 @@ export async function getEvents(req: Request, res: Response) {
   }
 }
 
-export async function updateEventSubmission(req: Request, res: Response) {
-  const eventId: string = req.params.id;
-
-  if (!eventId || eventId === null) {
-    res.status(400).json({ message: "Missing Event Id" });
-    return;
+export async function updateEventSubmission(eventId: string): Promise<String> {
+  if (!eventId) {
+    return Promise.reject("Missing Event Id");
   }
 
   try {
     const event = await Event.findById(eventId);
     if (!event || event === null) {
-      res.status(404).json({ message: "Event not found" });
-      return;
+      return Promise.reject("Event not found");
     }
 
     event.submissions += 1;
     await event.save();
-    res.status(200).json({ message: "Event submission updated successfully" });
-    return;
+    return Promise.resolve("Event submission updated successfully");
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Internal server error in updating event submission" });
-    return;
+    return Promise.reject("Error in updating event submission");
   }
 }

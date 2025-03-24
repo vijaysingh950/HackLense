@@ -67,4 +67,13 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
+## To start the flask server
+
+- go to `\ml` directory
+- run the following command:
+
+```bash
+ python -m flask_api.main
+```
+
 ---

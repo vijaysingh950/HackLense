@@ -30,4 +30,6 @@ app.use("/account", accountRoutes);
 app.use("/event", eventRoutes);
 app.use("/rubrics", rubricRoutes);
 
+app.use("/events", eventRoutes);
+
 export default app;

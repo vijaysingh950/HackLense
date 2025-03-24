@@ -3,6 +3,7 @@ import morgan from "morgan";
 import accountRoutes from "@/routes/account";
 import eventRoutes from "@/routes/event";
 import rubricRoutes from "@/routes/rubrics";
+import submissionRoutes from "@/routes/submission";
 import cookieParser from "cookie-parser";
 import { validateAuthToken } from "./middlewares/validateAuthToken";
 import cors from "cors";
@@ -29,7 +30,7 @@ app.get("/", (_req: Request, res: Response) => {
 app.use("/account", accountRoutes);
 app.use("/event", eventRoutes);
 app.use("/rubrics", rubricRoutes);
-
 app.use("/events", eventRoutes);
+app.use("/submissions", submissionRoutes);
 
 export default app;

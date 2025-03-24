@@ -50,8 +50,6 @@ semantic_descriptions = {
 
 <h2>Thank you for using the Evaluator API. 🚀</h2>
 
-
-
 <h2>Dependencies/Python Libraries to install</h2>
 <ul>
 <li>nltk</li>
@@ -59,3 +57,14 @@ semantic_descriptions = {
 <li>scipy</li>
 <li>numpy</li>
 </ul>
+
+---
+
+## To start with venv
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+---

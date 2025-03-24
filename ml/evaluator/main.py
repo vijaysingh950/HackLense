@@ -1,8 +1,8 @@
-from database import DataBase
-from pre_processor import PreProcessor
-from golden_Vectorizer import GoldenVectorizer
-from vectorizer import Vectorizer
-from comperator import Comperator
+from .database import DataBase
+from .pre_processor import PreProcessor
+from .golden_Vectorizer import GoldenVectorizer
+from .vectorizer import Vectorizer
+from .comperator import Comperator
 
 class GoldenMatrix:
   def __init__(self):
@@ -47,4 +47,5 @@ class Evaluator:
     
     final_score = self.combineScore(scores)
 
-    return final_score
+   
+    return {"scores": scores, "final_score": final_score}

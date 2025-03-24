@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Link, useLocation } from "react-router-dom";
 import { Element } from "react-scroll";
 import './LandingPage.css';
+import Navbar from "../components/Navbar";
 
 const LandingPage = () => {
   const location = useLocation();
@@ -48,6 +49,7 @@ const LandingPage = () => {
 
   return (
     <div>
+      <Navbar />
       <section className="hero">
         <h1>AI-Powered Evaluation for Educators</h1>
         <p>Streamline your grading process with our intelligent evaluation system that ranks student submissions based on your custom criteria.</p>

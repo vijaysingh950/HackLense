@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./LoginPage.css";
+import Navbar from "../components/Navbar";
 
 const BACKEND_URL = "http://localhost:3000";
 
@@ -92,6 +93,8 @@ const LoginPage = () => {
   };
 
   return (
+    <>
+    <Navbar />
     <div className="login-page-container">
       <div className="login-card-container">
         <div className="login-header">
@@ -218,6 +221,7 @@ const LoginPage = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

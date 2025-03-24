@@ -16,7 +16,7 @@ const ParameterSchema = new Schema({
         type: Number,
         required: true,
         min: 0,
-        max: 100
+        max: 10
     },
     status: {
         type: String,

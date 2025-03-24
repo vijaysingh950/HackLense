@@ -17,6 +17,11 @@ const KeywordSchema = new Schema({
         required: true,
         trim: true
     },
+    createdBy: {
+        type: Schema.Types.ObjectId,
+        ref: "users",
+        required: true
+    },
     createdAt: {
         type: Date,
         default: Date.now

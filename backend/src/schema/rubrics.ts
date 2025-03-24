@@ -22,8 +22,7 @@ const RubricSchema = new Schema({
   ],
   keywords: [
     {
-      type: String,
-      trim: true,
+      name: String,
       weightage: Number,
     },
   ],

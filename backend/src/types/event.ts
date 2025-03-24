@@ -4,8 +4,7 @@ export interface Event {
   startDate: Date;
   endDate: Date;
   rubric: string;
-  participants: number[];
-  submissions: number[];
+  submissions: number;
   createdBy: string;
   createdAt: Date;
 }

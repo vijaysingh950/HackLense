@@ -4,13 +4,13 @@ import { UserInTransit } from "@/types/user";
 import { generateUserInTransit } from "@/shared/generateInterfaces";
 
 // extending request object to include user
-declare global {
-  namespace Express {
-    interface Request {
-      user: UserInTransit;
-    }
-  }
-}
+// declare global {
+//   namespace Express {
+//     interface Request {
+//       user: UserInTransit;
+//     }
+//   }
+// }
 
 export function validateAuthToken(cookieName = "authToken") {
   return async (req: Request, res: Response, next: NextFunction) => {

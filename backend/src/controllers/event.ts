@@ -2,6 +2,15 @@ import { Request, Response } from "express";
 import Event from "@/schema/events";
 import { Event as EventInterface } from "@/types/event";
 import { findUserByEmail } from "@/services/dbService";
+import { UserInTransit } from "@/types/user";
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: UserInTransit;
+    }
+  }
+}
 
 export async function createEvent(req: Request, res: Response) {
   const event: EventInterface = req.body;
@@ -58,6 +67,37 @@ export async function createEvent(req: Request, res: Response) {
 export async function getEvents(req: Request, res: Response) {
   try {
     const events: EventInterface[] = await Event.find({});
+    res.status(200).json(events);
+    return;
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal server error in fetching events" });
+    return;
+  }
+}
+
+export async function getEventTeacherSpecific(req: Request, res: Response) {
+  try {
+    // Fetching createdBy from the cookie
+    const createdBy = req.user?.email;
+    if (!createdBy || createdBy === null) {
+      console.log("User not found");
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    const user = await findUserByEmail(createdBy);
+
+    if (!user || user === null) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    const events: EventInterface[] = await Event.find({
+      createdBy: user._id,
+    });
+
     res.status(200).json(events);
     return;
   } catch (error) {

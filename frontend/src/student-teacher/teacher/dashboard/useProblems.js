@@ -40,8 +40,6 @@ _id
 : 
 "67e10252e39d7bcc3dc4d0a0"
 */
-
-// This is a mock hook that would be replaced with actual API calls in a real application
 export const useProblems = () => {
   const [problems, setProblems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -52,7 +50,9 @@ export const useProblems = () => {
       setLoading(true);
       try {
         // Replace with your actual API endpoint
-        const response = await fetch(`${BACKEND_URL}/event`);
+        const response = await fetch(`${BACKEND_URL}/event/specific`, {
+          credentials: "include", // This ensures cookies are sent with the request
+        });
         const data = await response.json();
         setProblems(data);
       } catch (error) {

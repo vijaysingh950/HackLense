@@ -32,7 +32,7 @@ const Navbar = () => {
           <div className="avatar">
             <span>JS</span>
           </div>
-          <span className="username">John Student</span>
+          <span className="username">John Teacher</span>
         </div>
         <div className="navbar-actions">
           {user ? (

@@ -106,6 +106,8 @@ function UploadProblem() {
   const [error, setError] = useState("");
   const { defaultParameters, setDefaultParameters } = usedefaultParameter();
   const [subject, setSubject] = useState("");
+  const [dateError, setDateError] = useState('');
+
 
   function getCurrentDate() {
     const today = new Date();
@@ -170,7 +172,26 @@ function UploadProblem() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setDateError('');
+    if (!startDate) {
+      setError("Start date is required");
+      setTimeout(() => setError(""), 3000);
+      return;
+    }
+  
+    if (!endDate) {
+      setError("Last date is required");
+      setTimeout(() => setError(""), 3000);
+      return;
+    }
+    // Validate date range
+    const start = new Date(startDate);
+    const end = new Date(endDate);
 
+    if (start > end) {
+      setDateError("End date must be after or equal to start date");
+      return;
+    }
     if (!description.trim()) {
       setError("Problem statement is required");
       setTimeout(() => setError(""), 3000);
@@ -290,17 +311,6 @@ function UploadProblem() {
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="tite">Title *</label>
-                  <input
-                    type="text"
-                    id="title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Enter Title"
-                    required
-                  />
-                </div>
-                <div className="form-group">
                   <label htmlFor="description">Problem Statement *</label>
                   <textarea
                     id="description"
@@ -336,8 +346,39 @@ function UploadProblem() {
                     <option value="innovation">Innovation Challenge</option>
                   </select>
                 </div>
-
                 <div className="form-group">
+                  <label htmlFor="startDate">Start Date *</label>
+                  <input
+                    className="custom-date"
+                    type="date"
+                    id="startDate"
+                    value={startDate}
+                    onChange={(e) => {
+                      setStartDate(e.target.value);
+                      // Reset end date if it's now before the new start date
+                      if (e.target.value && endDate && new Date(e.target.value) > new Date(endDate)) {
+                        setEndDate('');
+                      }
+                    }}
+                    required
+                  />
+                </div>
+              <div className="form-group">
+                <label htmlFor="endDate">Last Date *</label>
+                <input
+                  className="custom-date"
+                  type="date"
+                  id="endDate"
+                  value={endDate}
+                  min={startDate} // Prevent selecting dates before start date
+                  onChange={(e) => setEndDate(e.target.value)}
+                  placeholder="Enter End Date"
+                  required
+                  disabled={!startDate} // Disable end date selection until start date is chosen
+                />
+                {dateError && <div className="error-message">{dateError}</div>}
+              </div>
+                {/* <div className="form-group">
                   <label htmlFor="startDate">Start Date *</label>
                   <input
                     className="custom-date"
@@ -360,7 +401,7 @@ function UploadProblem() {
                     placeholder="Enter End Date"
                     required
                   />
-                </div>
+                </div> */}
                 {subject === "innovation" && (
                   <div className="form-group">
                     <label>Added Parameters</label>

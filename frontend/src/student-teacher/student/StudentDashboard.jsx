@@ -10,7 +10,6 @@ function StudentDashboard() {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationContent, setNotificationContent] = useState({});
   const [assignments, setAssignments] = useState([]);
-
   const addNotification = (notification) => {
     setNotifications(prev => [...prev, notification]);
     setNotificationContent(notification);

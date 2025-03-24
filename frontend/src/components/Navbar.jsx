@@ -36,6 +36,9 @@ const Navbar = () => {
         <Link to="/contact#find-us" className="navbar-item">
           Find Us
         </Link>
+        <Link to="/resources" className="navbar-item">
+          Top-Achievers
+        </Link>
       </div>
 
       <div className="navbar-actions">

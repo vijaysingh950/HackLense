@@ -16,35 +16,28 @@ class GoldenMatrix:
       self.generate_golden_matrices(parameter)
 
 class Evaluator:
-  def __init__(self, sem_desc_dict: dict):
-    self.sem_desc_dict = sem_desc_dict
+  def __init__(self, sem_desc_text: str):
+    self.sem_desc_text = sem_desc_text
     self.db = DataBase()
 
-  def evaluate(self, sem_desc):
+  def evaluate(self):
     scores = {}
     for param in self.db.getParemList():
-      pre_proc = PreProcessor(sem_desc).main() # preprocessed
+      pre_proc = PreProcessor(self.sem_desc_text).main() # preprocessed
       sem_desc_mat, golden_mat = Vectorizer(pre_proc, param).main() # vectorised
-      scores[param] = Comperator().main(sem_desc_mat, golden_mat) # score
-
-      print(f"Score of {param} :", scores[param]) # temp
-    
+      scores[param] = Comperator().main(sem_desc_mat, golden_mat) # score    
     return scores
     
   def combineScore(self, scores: dict):
-    s = 0
-    for submi_type in scores:
-      for param in scores[submi_type]:
-        s += scores[submi_type][param]
+    weight = self.db.getWeightList()
+    final_score = 0
+    for param in scores:
+      final_score += scores[param] * weight[param]
     
-    return s
+    return final_score / len(weight)
 
-  def run(self):
-    scores = {}
-
-    for submi_type in self.sem_desc_dict:
-      scores[submi_type] = self.evaluate(self.sem_desc_dict[submi_type])
-    
+  def run(self) -> (dict, float):
+    scores = self.evaluate()
     final_score = self.combineScore(scores)
 
-    return final_score
+    return scores, final_score

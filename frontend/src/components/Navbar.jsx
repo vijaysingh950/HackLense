@@ -17,10 +17,10 @@ const Navbar = () => {
     }
   }, []);
 
-  return (
+  return ( 
     <div className="navbar">
       <div className="navbar-logo">
-        <Link to="/">LOGO</Link>
+        <Link to="/">🏆 AssesRank</Link>
       </div>
 
       <div className="navbar-menu">

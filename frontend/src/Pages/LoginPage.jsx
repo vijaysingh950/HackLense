@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./LoginPage.css";
+import Navbar from "../components/Navbar";
 
 const BACKEND_URL = "http://localhost:3000";
 
@@ -12,6 +13,8 @@ const LoginPage = () => {
     remember: false,
   });
   const [errorMessage, setErrorMessage] = useState("");
+
+  const navigate = useNavigate();
 
   // Switch between tabs (student/teacher)
   const switchTab = (tab) => {
@@ -70,9 +73,15 @@ const LoginPage = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.success) {
+        if (data.user !== null || data.user !== undefined) {
           // Redirect to dashboard or appropriate page
-          window.location.href = "/"; // Example redirect
+          if (data.user.role === "user") {
+            navigate("/student-dashboard");
+          } else if (data.user.role === "teacher") {
+            navigate("/contact");
+          } else {
+            setErrorMessage("Invalid role. Please try again.");
+          }
         } else {
           setErrorMessage(data.message || "Login failed");
         }
@@ -84,6 +93,8 @@ const LoginPage = () => {
   };
 
   return (
+    <>
+    <Navbar />
     <div className="login-page-container">
       <div className="login-card-container">
         <div className="login-header">
@@ -210,6 +221,7 @@ const LoginPage = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

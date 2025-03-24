@@ -1,4 +1,4 @@
-/* Dashboard.css */
+/* TeacherDashboard.css */
 :root {
     --primary-color: #3E5C76;
     --secondary-color: #748CAB;
@@ -17,7 +17,7 @@
   
   /* Base Styles */
   .dashboard-container {
-    width: 100%;
+    width: 100vw;
     padding: 20px;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     color: var(--dark-color);
@@ -49,7 +49,6 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    /* text-fill-color: transparent; */
     letter-spacing: -0.5px;
   }
   
@@ -65,27 +64,43 @@
     align-items: flex-end;
   }
   
-  .completion-bar {
-    height: 8px;
-    width: 200px;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 8px;
+  .upload-problem-button {
+    text-align: center;
   }
   
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #4c6b85, #cbd4df);
-    border-radius: 4px;
-    transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  
-  .completion-text {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #e0e0e09b;
-  }
+  .upload-btn {
+    background-color: #1D2D44;
+    color: #fff;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 2px solid transparent; /* Transparent border */
+    border-image: linear-gradient(90deg, #a4a4a4, #f0f0f0);
+    border-image-slice: 1;
+    border-radius: 8px; /* More rounding */
+    display: inline-flex; /* Ensures no extra spacing issues */
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    text-decoration: none; /* Removes any underline */
+    outline: none; /* Prevents focus outlines */
+    transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+.upload-btn:hover {
+    background-color: #0D1321;
+    transform: translateY(-3px);
+}
+
+.upload-btn:focus {
+    outline: none;
+}
+
+  .plus-sign {
+    font-size: 20px;
+    font-weight: bold;
+  }  
   
   /* Stats Container */
   .stats-container {
@@ -151,17 +166,17 @@
     color: var(--primary-color);
   }
   
-  .stat-icon.submitted {
+  .stat-icon.active {
     background-color: rgba(76, 175, 80, 0.1);
     color: var(--success-color);
   }
   
-  .stat-icon.pending {
+  .stat-icon.completed {
     background-color: rgba(255, 152, 0, 0.1);
     color: var(--warning-color);
   }
   
-  .stat-icon.overdue {
+  .stat-icon.scored {
     background-color: rgba(244, 67, 54, 0.1);
     color: var(--danger-color);
   }
@@ -268,7 +283,7 @@
   
   .view-mode-btn {
     background: none;
-    border: 1px solid rgba(106, 103, 103, 0.866);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     width: 36px;
     height: 36px;
@@ -288,15 +303,8 @@
   .view-mode-btn.active {
     color: var(--primary-color);
     background-color: rgba(62, 92, 118, 0.1);
-    border-color: #f1f1f1;
+    border-color: var(--primary-color);
   }
-  .view {
-    display: flex;
-    font-size: larger;
-    align-items: center;
-    color: #F0EBD8;
-  }  
-  
   
   /* Assignments List */
   .assignments-list {
@@ -367,6 +375,13 @@
     position: relative;
     overflow: hidden;
   }
+  .view{
+    display: flex;
+    font-size: larger;
+    align-items: center;
+    color: #F0EBD8;
+}
+
   
   .assignments-list.grid .assignment-header {
     min-height: 80px;
@@ -436,6 +451,7 @@
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
   }
   
@@ -924,10 +940,17 @@
     animation-delay: calc(var(--card-index) * 0.05s);
   }
   
+  /* Pin Button Animation */
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
   
   .pin-button.pinned:hover::before {
+    content: '📌';
     display: inline-block;
     margin-right: 4px;
+    animation: spin 1s linear;
   }
   
   /* Focus states for accessibility */

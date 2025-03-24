@@ -1,13 +1,9 @@
-// src/components/Navbar.jsx
 import { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import './Navbar.css';
 
-const Navbar = ({ notifications }) => {
-  const [showNotifications, setShowNotifications] = useState(false);
-  const handleClick = () => {
-    window.scrollTo(0, 0);
-  };
+const Navbar = () => {
+  /* const [showNotifications, setShowNotifications] = useState(false); */
 
   const [user, setUser] = useState(null); // Store user info (null = not logged in)
 
@@ -32,29 +28,6 @@ const Navbar = ({ notifications }) => {
       {/* </div> */}
       
       <div className="nav-actions">
-        <div className="notification-bell">
-          <button onClick={() => setShowNotifications(!showNotifications)}>
-            <span className="icon">🔔</span>
-            {notifications.length > 0 && <span className="notification-badge">{notifications.length}</span>}
-          </button>
-          
-          {showNotifications && (
-            <div className="notification-dropdown">
-              <h3>Notifications</h3>
-              {notifications.length ? (
-                <ul>
-                  {notifications.map(notification => (
-                    <li key={notification.id} className={`notification-item ${notification.type}`}>
-                      {notification.message}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="no-notifications">No new notifications</p>
-              )}
-            </div>
-          )}
-        </div>
         <div className="user-profile">
           <div className="avatar">
             <span>JS</span>

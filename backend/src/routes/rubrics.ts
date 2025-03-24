@@ -1,8 +1,10 @@
 import { Router } from "express";
-import { getEventRubric } from "@/controllers/rubrics";
+import { createRubric, getRubrics } from "@/controllers/rubrics";
 
 const router = Router();
 
-router.get("/:id", getEventRubric); // Get a rubric by ID
+router.post("/", createRubric);
+
+router.get("/:id", getRubrics);
 
 export default router;

@@ -1,12 +1,14 @@
-import { createEvent, getEventById, deleteEvent } from "@/controllers/events";
 import { Router } from "express";
+import {
+  createEvent,
+  getEvents,
+  updateEventSubmission,
+} from "@/controllers/event";
 
 const router = Router();
 
 router.post("/", createEvent);
-
-router.get("/:id", getEventById);
-
-router.delete("/:id", deleteEvent);
+router.get("/", getEvents);
+// router.post("/updateSubmission/:id", updateEventSubmission);
 
 export default router;

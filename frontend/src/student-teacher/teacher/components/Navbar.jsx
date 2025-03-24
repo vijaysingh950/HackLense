@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import './Navbar.css';
+import "./Navbar.css";
 
 const Navbar = () => {
   /* const [showNotifications, setShowNotifications] = useState(false); */
@@ -19,14 +19,14 @@ const Navbar = () => {
       <div className="navbar-logo">
         <Link to="/">🏆 AssesRank</Link>
       </div>
-      
+
       {/* <div className="nav-links"> */}
-        {/* <a href="#" className="active"><h1>Student Dashboard</h1></a> */}
-        {/* <a href="#">Courses</a>
+      {/* <a href="#" className="active"><h1>Student Dashboard</h1></a> */}
+      {/* <a href="#">Courses</a>
         <a href="#">Resources</a>
         <a href="#">Messages</a> */}
       {/* </div> */}
-      
+
       <div className="nav-actions">
         <div className="user-profile">
           <div className="avatar">
@@ -46,12 +46,11 @@ const Navbar = () => {
             </Link>
           )}
         </div>
-        
-    </div>
-        
+      </div>
+
       {/* </div> */}
-    {/* </div>   */}
-  </nav>
+      {/* </div>   */}
+    </nav>
   );
 };
 

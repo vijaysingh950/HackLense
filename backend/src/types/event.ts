@@ -1,10 +1,18 @@
 export interface Event {
   title: string;
   description: string;
+  subject: string;
   startDate: Date;
   endDate: Date;
-  rubric: string;
+  parameters: {
+    name: string;
+    priority: number;
+  }[];
+  keywords: {
+    name: string;
+    priority: number;
+  }[];
   submissions: number;
-  createdBy: string;
+  createdBy?: string;
   createdAt: Date;
 }

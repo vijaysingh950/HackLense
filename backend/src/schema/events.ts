@@ -13,6 +13,10 @@ const EventSchema = new Schema({
     trim: true,
     maxlength: 500,
   },
+  subject: {
+    type: String,
+    required: true,
+  },
   startDate: {
     type: Date,
     required: true,
@@ -21,11 +25,18 @@ const EventSchema = new Schema({
     type: Date,
     required: true,
   },
-  rubric: {
-    type: Schema.Types.ObjectId,
-    ref: "rubrics",
-    required: true,
-  },
+  parameters: [
+    {
+      name: String,
+      pirority: Number,
+    },
+  ],
+  keywords: [
+    {
+      name: String,
+      priority: Number,
+    },
+  ],
   submissions: {
     type: Number,
     default: 0,

@@ -222,6 +222,7 @@ function UploadProblem() {
       // Replace with actual API call
       const response = await fetch("http://localhost:3000/event", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },

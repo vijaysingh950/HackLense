@@ -2,7 +2,6 @@ import express, { Request, Response } from "express";
 import morgan from "morgan";
 import accountRoutes from "@/routes/account";
 import eventRoutes from "@/routes/event";
-import rubricRoutes from "@/routes/rubrics";
 import submissionRoutes from "@/routes/submission";
 import cookieParser from "cookie-parser";
 import { validateAuthToken } from "./middlewares/validateAuthToken";
@@ -10,7 +9,12 @@ import cors from "cors";
 
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+  origin: "http://localhost:5173",
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 app.use(morgan("dev"));
 
@@ -29,8 +33,6 @@ app.get("/", (_req: Request, res: Response) => {
 
 app.use("/account", accountRoutes);
 app.use("/event", eventRoutes);
-app.use("/rubrics", rubricRoutes);
-app.use("/events", eventRoutes);
 app.use("/submissions", submissionRoutes);
 
 export default app;

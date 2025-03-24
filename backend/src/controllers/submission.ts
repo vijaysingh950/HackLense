@@ -30,10 +30,6 @@ export async function createSubmission(req: Request, res: Response) {
       return;
     }
 
-    submission.rubric = "" + eventExists.rubric; // converting to string
-    submission.extractedContent = "";
-    submission.finalScore = 0;
-
     const newSubmission = await Submission.create(submission);
     const updatedEvent = await updateEventSubmission(submission.event);
     if (!newSubmission || !updatedEvent) {

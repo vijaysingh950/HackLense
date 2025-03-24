@@ -7,7 +7,7 @@ import { generateUserInTransit } from "@/shared/generateInterfaces";
 declare global {
   namespace Express {
     interface Request {
-      user?: UserInTransit;
+      user: UserInTransit;
     }
   }
 }

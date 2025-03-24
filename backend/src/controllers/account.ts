@@ -112,6 +112,7 @@ export async function accountLogin(req: Request, res: Response) {
 }
 
 export async function accountLogout(req: Request, res: Response) {
+  res.clearCookie("authToken");
   res.status(200).json({ message: "Logout" });
   return;
 }

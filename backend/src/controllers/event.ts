@@ -12,10 +12,10 @@ export async function createEvent(req: Request, res: Response) {
   if (
     !event.title ||
     !event.description ||
+    !event.subject ||
     !event.startDate ||
     !event.endDate ||
-    !event.rubric ||
-    !event.createdBy
+    !event.parameters
   ) {
     res.status(400).json({ message: "Missing Fields" });
     return;
@@ -24,21 +24,23 @@ export async function createEvent(req: Request, res: Response) {
   event.submissions = 0;
 
   try {
-    // checking if rubric exists
-    const rubric = await Rubric.findById(event.rubric);
-    if (!rubric || rubric === null) {
-      res.status(404).json({ message: "Rubric not found" });
-      return;
-    }
-
-    // checking if createdBy exists
-    const createdBy = await findUserByEmail(event.createdBy);
+    // Fetching createdBy from the cookie
+    const createdBy = req?.user?.email;
     if (!createdBy || createdBy === null) {
       res.status(404).json({ message: "User not found" });
       return;
     }
 
-    event.createdBy = createdBy._id;
+    console.log("createdBy", createdBy);
+
+    const user = await findUserByEmail(createdBy);
+
+    if (!user || user === null) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    event.createdBy = user._id;
 
     const newEvent = await Event.create(event);
     if (!newEvent || newEvent === null) {

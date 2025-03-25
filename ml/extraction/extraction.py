@@ -76,10 +76,10 @@ def process_text(text):
     return semantic_descriptions
 
 
-def extract_content(file_path):
+if __name__ == "__main__":
     # Check if arguments are provided
     if len(sys.argv) < 2:
-        print(json.dumps({"message": "No input provided"}))
+        print(json.dumps({"message": "No filename provided"}))
         sys.exit(1)
 
     for arg in sys.argv[1:]:

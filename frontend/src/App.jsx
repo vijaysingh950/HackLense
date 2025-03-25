@@ -9,6 +9,8 @@ import ContactPage from "./Pages/ContactPage";
 import ScrollToTop from "./components/ScrollToTop";
 import TeacherDashboard from "./student-teacher/teacher/dashboard/TeacherDashboard";
 import UploadProblem from "./student-teacher/teacher/components/uploadProblem/UploadProblem";
+import ProblemSubmissions from "./student-teacher/teacher/ProblemSubmissions";
+import Resource from "./Pages/Resource";
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
         <Route path="/signup-page" element={<SignUpPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/upload-problem" element={<UploadProblem />}></Route>
+        <Route path="submissions" element={<ProblemSubmissions />} />
+        <Route path="resources" element={<Resource />} />
       </Routes>
       <ChatbotButton />
     </>

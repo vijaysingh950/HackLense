@@ -1,11 +1,11 @@
 import express, { Request, Response } from "express";
 import morgan from "morgan";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 import accountRoutes from "@/routes/account";
 import eventRoutes from "@/routes/event";
 import submissionRoutes from "@/routes/submission";
-import cookieParser from "cookie-parser";
 import { validateAuthToken } from "./middlewares/validateAuthToken";
-import cors from "cors";
 
 const app = express();
 

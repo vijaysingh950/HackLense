@@ -75,6 +75,7 @@ const LoginPage = () => {
       .then((response) => response.json())
       .then((data) => {
         if (data.user !== null || data.user !== undefined) {
+          console.log(data.user.name)
           // Redirect to dashboard or appropriate page
           if (data.user.role === "user") {
             navigate("/student-dashboard");

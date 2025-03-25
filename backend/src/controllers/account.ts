@@ -97,8 +97,8 @@ export async function accountLogin(req: Request, res: Response) {
       throw new Error("Token generation failed");
     } else {
       res.cookie("authToken", token, {
-        httpOnly: true,
-        sameSite: "strict",
+        httpOnly: false,
+        secure: true,
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
       });
     }

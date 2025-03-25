@@ -6,7 +6,8 @@ import corsOptions from "@/config/corsOptions";
 import accountRoutes from "@/routes/account";
 import eventRoutes from "@/routes/event";
 import submissionRoutes from "@/routes/submission";
-import { validateAuthToken } from "./middlewares/validateAuthToken";
+import { validateAuthToken } from "@/middlewares/validateAuthToken";
+import errorHandler from "@/middlewares/errorHandler";
 
 const app = express();
 
@@ -32,5 +33,12 @@ app.use(validateAuthToken());
 app.use("/account", accountRoutes);
 app.use("/event", eventRoutes);
 app.use("/submissions", submissionRoutes);
+
+// 404 Not Found handler
+app.all("*", (req, res) => {
+  res.status(404).json({ error: "The requested route could not be found." });
+});
+
+app.use(errorHandler);
 
 export default app;

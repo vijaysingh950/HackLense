@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import corsOptions from "@/config/corsOptions";
 import accountRoutes from "@/routes/account";
 import eventRoutes from "@/routes/event";
+import notificationRoutes from "@/routes/notification";
 import submissionRoutes from "@/routes/submission";
 import { validateAuthToken } from "@/middlewares/validateAuthToken";
 import errorHandler from "@/middlewares/errorHandler";
@@ -33,6 +34,7 @@ app.use(validateAuthToken());
 app.use("/account", accountRoutes);
 app.use("/event", eventRoutes);
 app.use("/submissions", submissionRoutes);
+app.use("/notification", notificationRoutes);
 
 // 404 Not Found handler
 app.all("*", (req, res) => {

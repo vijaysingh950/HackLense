@@ -1,16 +1,23 @@
 import os
 from flask import Flask, request, jsonify
 from evaluator import Evaluator
+from genericEvaluation.genericEvaluator import GenericEvaluator
 from extraction import process_video, process_audio, process_image, process_text_file
+from dotenv import load_dotenv
+
+# load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
 
-UPLOAD_FOLDER = "/home/satwikkaushik/HackLense/userUploads"
+UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER")
+PORT = int(os.getenv("PORT"))
+
+print(f"UPLOAD_FOLDER: {UPLOAD_FOLDER}")
 
 @app.route("/")
 def home():
     return jsonify({"message": "Hello, Flask!"})
-
 
 @app.route('/evaluate', methods=['POST'])
 def evaluate():
@@ -30,7 +37,6 @@ def evaluate():
     except Exception as e:
         print(e)
         return jsonify({"error": str(e)}), 500
-
 
 @app.route('/extract', methods=['POST'])
 def extract_content():
@@ -67,6 +73,81 @@ def extract_content():
 
     return jsonify(semantic_descriptions), 200
 
+@app.route('/evaluate/ms', methods=['POST'])
+def evaluate_mathsScience():
+    """API to evaluate submission for hackathon using Google Generative AI."""
+    try:
+        data = request.get_json()
 
-if __name__ == "__main__":
-    app.run(port=3001)
+        if not data or not isinstance(data, dict):
+            return jsonify({"score": 0}), 400
+
+        # Initialize GenericEvaluator and generate content
+        evaluator = GenericEvaluator()
+        generated_content = evaluator.mathsScience(data)
+
+        return jsonify({"score": generated_content}), 200
+
+    except Exception as e:
+        print(e)
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/generate/keywords', methods=['POST'])
+def generate_keywords():
+    """API to generate keywords for hackathon using Google Generative AI."""
+    try:
+        data = request.get_json()
+
+        if not data or not isinstance(data, dict):
+            return jsonify({"error": "No data provided"}), 400
+
+        # Initialize GenericEvaluator and generate content
+        evaluator = GenericEvaluator()
+        generated_content = evaluator.hackathon(data)
+
+        return jsonify({"keywords": generated_content}), 200
+
+    except Exception as e:
+        print(e)
+        return jsonify({"error": str(e)}), 500
+    
+@app.route('/generate/summary', methods=['POST'])
+def generate_summary():
+    """API to generate summary for hackathon using Google Generative AI."""
+    try:
+        data = request.get_json()
+
+        if not data or not isinstance(data, dict):
+            return jsonify({"error": "No data provided"}), 400
+
+        # Initialize GenericEvaluator and generate content
+        evaluator = GenericEvaluator()
+        generated_content = evaluator.summary(data)
+
+        return jsonify({"summary": generated_content}), 200
+
+    except Exception as e:
+        print(e)
+        return jsonify({"error": str(e)}), 500
+    
+@app.route('/translate', methods=['POST'])
+def translate():
+    """API to translate multilungual to english using Google Generative AI."""
+    try:
+        data = request.get_json()
+
+        if not data or not isinstance(data, dict):
+            return jsonify({"error": "No data provided"}), 400
+
+        # Initialize GenericEvaluator and generate content
+        evaluator = GenericEvaluator()
+        generated_content = evaluator.language(data)
+
+        return jsonify({"text": generated_content}), 200
+
+    except Exception as e:
+        print(e)
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == "__main__":  
+    app.run(port=PORT)

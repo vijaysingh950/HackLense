@@ -13,6 +13,10 @@ const EventSchema = new Schema({
     trim: true,
     maxlength: [500, "Description must not exceed 500 characters"],
   },
+  topic:{
+    type: String,
+    required: true
+  },
   subject: {
     type: String,
     required: [true, "Subject is required"],
@@ -48,23 +52,13 @@ const EventSchema = new Schema({
         required: [true, "Priority is required"],
         min: [1, "Priority must be at least 1"],
         max: [10, "Priority must not exceed 10"],
-      }
-    },
-  ],
-  keywords: [
-    {
-      name: {
-        type: String,
-        required: [true, "Keyword name is required"],
-      },
-      priority: {
-        type: Number,
-        required: [true, "Priority is required"],
-        min: [1, "Priority must be at least 1"],
-        max: [10, "Priority must not exceed 10"],
       },
     },
   ],
+  keywords: {
+    type: [String],
+    default: [],
+  },
   submissions: {
     type: Number,
     default: 0,
@@ -78,7 +72,7 @@ const EventSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-  }
+  },
 });
 
 const Event = mongoose.model("events", EventSchema);

@@ -295,10 +295,10 @@ const getFileTypeIcon = (type) => {
 
   if (loading) {
     return (
-      <div className="problem-submissions-container">
-        <div className="loading-spinner">
-          <div className="spinner"></div>
-          <p>Loading problem submissions...</p>
+      <div class="loading-overlay">
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+            <div class="loading-text">Loading...</div>
         </div>
       </div>
     );

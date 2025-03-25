@@ -1,7 +1,8 @@
 import os
 from flask import Flask, request, jsonify
 from evaluator import Evaluator
-from extraction import process_video, process_audio, process_image, process_text_file
+# from extraction import process_video, process_audio, process_image, process_text_file
+from extraction import extract_content
 
 app = Flask(__name__)
 
@@ -77,4 +78,4 @@ def extract_content():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(port=3001)

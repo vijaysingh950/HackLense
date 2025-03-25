@@ -6,16 +6,13 @@ const SubmissionSchema = new Schema({
     ref: "users",
     required: true,
   },
-  title: {
+  fileType: {
     type: String,
     required: true,
-    trim: true,
-    maxlength: 200,
   },
-  description: {
+  fileLanguage: {
     type: String,
-    trim: true,
-    maxlength: 500,
+    required: true,
   },
   fileURL: {
     type: String,
@@ -23,11 +20,6 @@ const SubmissionSchema = new Schema({
   },
   extractedContent: {
     type: String,
-  },
-  rubric: {
-    type: Schema.Types.ObjectId,
-    ref: "rubrics",
-    required: true,
   },
   event: {
     type: Schema.Types.ObjectId,

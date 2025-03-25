@@ -3,45 +3,87 @@ import { Request, Response } from "express";
 import { Submission as SubmissionInterface } from "@/types/submission";
 import Event from "@/schema/events";
 import { updateEventSubmission } from "@/controllers/event";
+import { findUserByEmail } from "@/services/dbService";
+import multer from "multer";
+import path from "path";
+import { UserInTransit } from "@/types/user";
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: UserInTransit;
+    }
+  }
+}
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: path.join(__dirname, "../../../userUploads"),
+    filename: function (req, file, cb) {
+      const uniqueName = `${Date.now()}_${file.originalname}`;
+      cb(null, uniqueName);
+    },
+  }),
+}).single("file");
 
 export async function createSubmission(req: Request, res: Response) {
-  const submission: SubmissionInterface = req.body;
-  if (
-    !submission.student ||
-    !submission.title ||
-    !submission.description ||
-    !submission.fileURL ||
-    !submission.submittedAt
-  ) {
-    res.status(400).json({ message: "Missing Fields" });
-    return;
-  }
-
-  try {
-    // validate event
-    if (!submission.event) {
-      res.status(400).json({ message: "Event ID is required" });
+  upload(req, res, async (err) => {
+    if (err) {
+      res.status(500).json({ message: "File upload error" });
       return;
     }
 
-    const eventExists = await Event.findById(submission.event);
-    if (!eventExists) {
-      res.status(404).json({ message: "Event not found" });
+    const submission: SubmissionInterface = req.body;
+    if (
+      !req.file ||
+      !submission.event ||
+      !submission.fileType ||
+      !submission.fileLanguage
+    ) {
+      res.status(400).json({ message: "Missing Fields" });
       return;
     }
 
-    const newSubmission = await Submission.create(submission);
-    const updatedEvent = await updateEventSubmission(submission.event);
-    if (!newSubmission || !updatedEvent) {
-      throw new Error("Error in creating submission");
+    try {
+      // validate event
+      const eventExists = await Event.findById(submission.event);
+      if (!eventExists || eventExists === null) {
+        res.status(404).json({ message: "Event not found" });
+        return;
+      }
+
+      // getting student from cookie
+      const userEmail = req.user?.email;
+      if (!userEmail || userEmail === null) {
+        res.status(404).json({ message: "User not found" });
+        return;
+      }
+
+      const user = await findUserByEmail(userEmail);
+      if (!user || user === null) {
+        res.status(404).json({ message: "User not found" });
+        return;
+      }
+
+      submission.student = "" + user._id;
+
+      // store fileURL
+      submission.fileURL = `${req.file.filename}`;
+
+      const newSubmission = await Submission.create(submission);
+      const updatedEvent = await updateEventSubmission(submission.event);
+      if (!newSubmission || !updatedEvent) {
+        throw new Error("Error in creating submission");
+      }
+      res.status(201).json(newSubmission);
+      return;
+    } catch (error) {
+      res.status(500).json({
+        message: "Error in creating submission",
+      });
       return;
     }
-    res.status(201).json(newSubmission);
-    return;
-  } catch (error) {
-    res.status(500).json({ message: "Error in creating submission" });
-    return;
-  }
+  });
 }
 
 export async function getSubmissions(req: Request, res: Response) {

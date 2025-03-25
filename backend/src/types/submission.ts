@@ -1,12 +1,11 @@
 export interface Submission {
-  _id: string;
+  event: string; // _id
+  fileType: string;
+  fileLanguage: string;
   student: string;
-  title: string;
-  description: string;
+  _id: string;
   fileURL: string;
   extractedContent?: string;
-  event: string;
-  rubric?: string;
   finalScore?: number;
-  submittedAt: Date;
+  submittedAt?: Date;
 }

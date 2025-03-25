@@ -39,8 +39,6 @@ export async function createEvent(req: Request, res: Response) {
       return;
     }
 
-    console.log("createdBy", createdBy);
-
     const user = await findUserByEmail(createdBy);
 
     if (!user || user === null) {

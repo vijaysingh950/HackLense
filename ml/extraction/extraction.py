@@ -76,7 +76,7 @@ def process_text(text):
     return semantic_descriptions
 
 
-if __name__ == "__main__":
+def extract_content(file_path):
     # Check if arguments are provided
     if len(sys.argv) < 2:
         print(json.dumps({"message": "No input provided"}))

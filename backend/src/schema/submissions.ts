@@ -13,7 +13,7 @@ const SubmissionSchema = new Schema({
   },
   fileLanguage: {
     type: String,
-    required: [true, "File language is required."],
+    required: true,
     trim: true,
   },
   fileURL: {
@@ -49,6 +49,11 @@ const SubmissionSchema = new Schema({
     type: Number,
     min: [0, "Final score must be at least 0."],
     max: [10, "Final score must not exceed 10."],
+  },
+  summary: {
+    type: String,
+    default: "",
+    trim: true,
   },
   submittedAt: {
     type: Date,

@@ -3,6 +3,7 @@ import Event from "@/schema/events";
 import { Event as EventInterface } from "@/types/event";
 import { findUserByEmail } from "@/services/dbService";
 import { UserInTransit } from "@/types/user";
+import { getEventKeywordsService } from "@/services/llmServices";
 
 declare global {
   namespace Express {
@@ -29,6 +30,8 @@ export async function createEvent(req: Request, res: Response) {
     return;
   }
 
+  event.topic = event.department;
+
   event.submissions = 0;
 
   try {
@@ -52,6 +55,12 @@ export async function createEvent(req: Request, res: Response) {
     if (!newEvent || newEvent === null) {
       throw new Error("Error in event creation");
     }
+
+    if (newEvent.subject === "innovation") {
+      // generating keywords if event is innovation(hackathon type)
+      await getEventKeywordsService("" + newEvent._id);
+    }
+
     res.status(201).json({ message: "Event created successfully" });
     return;
   } catch (error) {

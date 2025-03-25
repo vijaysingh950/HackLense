@@ -3,6 +3,7 @@ import Event from "@/schema/events";
 import { Event as EventInterface } from "@/types/event";
 import { findUserByEmail } from "@/services/dbService";
 import { UserInTransit } from "@/types/user";
+import Submission from "@/schema/submissions";
 
 declare global {
   namespace Express {
@@ -122,5 +123,46 @@ export async function updateEventSubmission(eventId: string): Promise<String> {
     return Promise.resolve("Event submission updated successfully");
   } catch (error) {
     return Promise.reject("Error in updating event submission");
+  }
+}
+
+export async function getFinalStandings(req: Request, res: Response) {
+  try {
+    const { eventId } = req.params;
+
+    const event = await Event.findById(eventId);
+    if (!eventId) {
+      res.status(400).json({ message: "Event ID is required" });
+      return;
+    }
+
+    if (!event) {
+      res.status(404).json({ message: "Event not found" });
+      return;
+    }
+
+    if (event.submissions === 0) {
+      res.status(200).json([]);
+      return;
+    }
+
+    const submissions = await Submission.find({ event: event._id }).populate(
+      "student", "name email");
+
+    const finalStandings = submissions
+      .filter((s: any) => s.submittedAt !== undefined)
+      .sort((a: any, b: any) =>
+        b.finalScore - a.finalScore ||
+        a.submittedAt - b.submittedAt ||
+        a.student.name.localeCompare(b.student.name) // Tie-breaker: Sort by name
+      );
+
+    res.status(200).json(finalStandings || []);
+    return;
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal server error in fetching final standings",
+    });
+    return;
   }
 }

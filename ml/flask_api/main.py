@@ -37,6 +37,26 @@ def evaluate_innovation():
     except Exception as e:
         print(e)
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/evaluate/LLM', methods=['POST'])
+def evaluate_LLM():
+    try:
+        # Get input JSON from request body
+        data = request.get_json()
+
+        if not data or not isinstance(data, dict):
+            return jsonify({"error": "Invalid input, expected a dictionary"}), 400
+
+        # Initialize Evaluator and run evaluation
+        evaluator = GenericEvaluator()
+        result = evaluator.evaluateInnovation(data)
+
+        return {"result": result}, 200
+
+    except Exception as e:
+        print(e)
+        return jsonify({"error": str(e)}), 500
+
 
 @app.route('/extract', methods=['POST'])
 def extract_content():

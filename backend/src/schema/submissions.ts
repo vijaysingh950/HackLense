@@ -50,6 +50,10 @@ const SubmissionSchema = new Schema({
     min: [0, "Final score must be at least 0."],
     max: [10, "Final score must not exceed 10."],
   },
+  paramsWise: {
+    type: [String],
+    default: [],
+  },
   summary: {
     type: String,
     default: "",

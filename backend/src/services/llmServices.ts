@@ -303,3 +303,63 @@ export async function evaluateInnovation(submissionId: string) {
     throw new Error("Error in evaluating Innovation Solution");
   }
 }
+
+export async function evaluateLLMService(submissionId: string) {
+  const defaultParams =
+    "relevance, feasibility, innovation, presentation, impact, completeness, technical-depth";
+
+  try {
+    // fetch submission
+    const submission = await Submission.findById(submissionId);
+    if (!submission || submission === null) {
+      return Promise.reject("Submission not found");
+    }
+
+    // fetch event corresponding to this solution
+    const event = await Event.findById(submission.event);
+    if (!event || event === null) {
+      return Promise.reject("Event not found");
+    }
+
+    const userParams = event.parameters
+      .sort((a, b) => b.priority - a.priority)
+      .map((param) => param.name);
+
+    interface SummaryResponse {
+      result: {
+        defaultParamsScore: string;
+        paramsScore: number;
+        paramsWise: string[];
+        paramsWise_normalized: number[];
+      };
+    }
+
+    const response = await axios.post<SummaryResponse>(
+      `${FLASK_API}/evaluate/LLM`,
+      {
+        solution: submission.extractedContent,
+        problem_statement: event.description,
+        metrices: userParams,
+        defaultParams: defaultParams,
+      }
+    );
+
+    if (response.data && response.data.result) {
+      const result = response.data.result;
+      const finalScore =
+        +result.defaultParamsScore * 0.7 + result.paramsScore * 0.3;
+
+      submission.finalScore = finalScore;
+      submission.paramsWise = result.paramsWise;
+
+      await submission.save();
+
+      return Promise.resolve("LLM Solution evaluated successfully");
+    } else {
+      throw new Error("Error in evaluating LLM Solution");
+    }
+  } catch (error) {
+    console.log("Error in evaluating LLM Solution:", error);
+    return Promise.reject("Error in evaluating LLM Solution");
+  }
+}

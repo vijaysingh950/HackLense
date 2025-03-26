@@ -136,6 +136,7 @@ export async function updateEventSubmission(eventId: string): Promise<String> {
     await event.save();
     return Promise.resolve("Event submission updated successfully");
   } catch (error) {
+    console.error("Error in updating event submission:", error);
     return Promise.reject("Error in updating event submission");
   }
 }

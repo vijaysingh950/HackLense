@@ -24,22 +24,10 @@ const EventSchema = new Schema({
   startDate: {
     type: Date,
     required: [true, "Start date is required"],
-    validate: {
-      validator: function (value: Date) {
-        return value > new Date(); // Ensure startDate is in the future
-      },
-      message: "Start date must be in the future",
-    },
   },
   endDate: {
     type: Date,
     required: [true, "End date is required"],
-    validate: {
-      validator: function (value: Date) {
-        return value > new Date(); // Ensure endDate is in the future
-      },
-      message: "End date must be in the future",
-    },
   },
   parameters: [
     {

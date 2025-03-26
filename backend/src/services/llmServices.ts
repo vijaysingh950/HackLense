@@ -264,3 +264,42 @@ export async function translationService(
     return Promise.reject("Error in translation");
   }
 }
+
+export async function evaluateInnovation(submissionId: string) {
+  try {
+    // fetch submission
+    const submission = await Submission.findById(submissionId);
+    if (!submission || submission === null) {
+      return Promise.reject("Submission not found");
+    }
+
+    // fetch event corresponding to this solution
+    const event = await Event.findById(submission.event);
+    if (!event || event === null) {
+      return Promise.reject("Event not found");
+    }
+
+    interface SummaryResponse {
+      finalScore: number;
+    }
+
+    const response = await axios.post<SummaryResponse>(
+      `${FLASK_API}/evaluate/innovation`,
+      {
+        text: submission.extractedContent,
+      }
+    );
+
+    if (response.data && response.data.finalScore) {
+      submission.finalScore = +response.data.finalScore;
+      await submission.save();
+
+      return Promise.resolve("Innovation Solution evaluated successfully");
+    } else {
+      throw new Error("Error in evaluating Innovation Solution");
+    }
+  } catch (error) {
+    console.error("Error in evaluating Innovation Solution:", error);
+    return Promise.reject("Error in evaluating Innovation Solution");
+  }
+}

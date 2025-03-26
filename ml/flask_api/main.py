@@ -19,8 +19,8 @@ print(f"UPLOAD_FOLDER: {UPLOAD_FOLDER}")
 def home():
     return jsonify({"message": "Hello, Flask!"})
 
-@app.route('/evaluate', methods=['POST'])
-def evaluate():
+@app.route('/evaluate/innovation', methods=['POST'])
+def evaluate_innovation():
     try:
         # Get input JSON from request body
         data = request.get_json()
@@ -32,7 +32,7 @@ def evaluate():
         evaluator = Evaluator(data)
         evaluation_result = evaluator.run()
 
-        return jsonify(evaluation_result), 200
+        return {"finalScore": evaluation_result["final_score"]}, 200
 
     except Exception as e:
         print(e)

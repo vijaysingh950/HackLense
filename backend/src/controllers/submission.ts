@@ -13,6 +13,7 @@ import {
   evaluateMathsScienceService,
   translationService,
   evaluateCodingService,
+  evaluateInnovation,
 } from "@/services/llmServices";
 
 declare global {
@@ -95,10 +96,13 @@ export async function createSubmission(req: Request, res: Response) {
         await evaluateMathsScienceService("" + newSubmission._id);
       } else if (event.subject === "coding") {
         await evaluateCodingService("" + newSubmission._id);
+      } else if (event.subject === "innovation") {
+        await evaluateInnovation("" + newSubmission._id);
       }
 
       return;
     } catch (error) {
+      console.log("Error in creating submission:", error);
       res.status(500).json({
         message: "Error in creating submission",
       });

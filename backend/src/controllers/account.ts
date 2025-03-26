@@ -5,7 +5,7 @@ import {
   findUserByEmail,
 } from "@/services/dbService";
 import { CreateUser, LoginUser, UserInTransit } from "@/types/user";
-import { hashPassword, comparePassword } from "@/services/passwordService";
+import { hashPassword, comparePassword } from "@/utils/bcyrpt";
 import { generateToken } from "@/services/authService";
 import { generateUserInTransit } from "@/shared/generateInterfaces";
 

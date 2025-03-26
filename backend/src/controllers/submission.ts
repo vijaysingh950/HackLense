@@ -15,6 +15,7 @@ import {
   evaluateCodingService,
   evaluateInnovation,
 } from "@/services/llmServices";
+import { AuthRequest } from "@/shared/interfaces";
 
 const upload = multer({
   storage: multer.diskStorage({
@@ -26,7 +27,7 @@ const upload = multer({
   }),
 }).single("file");
 
-export async function createSubmission(req: Request, res: Response) {
+export async function createSubmission(req: AuthRequest, res: Response) {
   upload(req, res, async (err) => {
     if (err) {
       res.status(500).json({ message: "File upload error" });
@@ -53,7 +54,7 @@ export async function createSubmission(req: Request, res: Response) {
       }
 
       // getting student from cookie
-      const userEmail = (req.user as UserInTransit)?.email;
+      const userEmail = (req.user)?.email;
       if (!userEmail) {
         res.status(404).json({ message: "User not found" });
         return;

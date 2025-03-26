@@ -1,10 +1,11 @@
 import { verifyToken } from "@/services/authService";
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import { UserInTransit } from "@/types/user";
 import { generateUserInTransit } from "@/shared/generateInterfaces";
+import { AuthRequest } from "@/shared/interfaces";
 
 export function validateAuthToken(cookieName = "authToken") {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const userToken = req.cookies[cookieName];
       if (userToken) {

@@ -78,6 +78,48 @@ export async function getEventKeywordsService(eventId: string) {
   }
 }
 
+export async function generateTestCasesService(eventId: string) {
+  try {
+    // fetch event corresponding to this solution
+    const event = await Event.findById(eventId);
+    if (!event || event === null) {
+      return Promise.reject("Event not found");
+    }
+
+    interface KeywordsResponse {
+      testCases: string;
+    }
+
+    const response = await axios.post<KeywordsResponse>(
+      `${FLASK_API}/generate/testCases`,
+      {
+        problem_statement: event.description,
+      }
+    );
+
+    if (response.data && response.data.testCases) {
+      // Extract JSON from the string
+      const jsonMatch = response.data.testCases.match(
+        /```json\n([\s\S]*?)\n```/
+      );
+
+      if (jsonMatch && jsonMatch[1]) {
+        const parsedTestCases = JSON.parse(jsonMatch[1]); // Parse the JSON string
+        event.testCases = parsedTestCases;
+        await event.save();
+        return Promise.resolve("Test Cases generated successfully");
+      } else {
+        throw new Error("Error parsing test cases JSON");
+      }
+    } else {
+      throw new Error("Error in generating Test Cases");
+    }
+  } catch (error) {
+    console.error("Error generating Test Cases:", error);
+    return Promise.reject("Error in generating Test Cases");
+  }
+}
+
 export async function submissionExtractDataService(
   submissionId: string,
   fileURL: string
@@ -137,6 +179,46 @@ export async function evaluateMathsScienceService(submissionId: string) {
     if (response.data && response.data.score) {
       submission.finalScore = response.data.score;
       await submission.save();
+
+      return Promise.resolve("Maths Science Solution evaluated successfully");
+    } else {
+      throw new Error("Error in evaluating Maths Science Solution");
+    }
+  } catch (error) {
+    console.error("Error in evaluating Maths Science Solution:", error);
+    return Promise.reject("Error in evaluating Maths Science Solution");
+  }
+}
+
+export async function evaluateCodingService(submissionId: string) {
+  try {
+    // fetch submission
+    const submission = await Submission.findById(submissionId);
+    if (!submission || submission === null) {
+      return Promise.reject("Submission not found");
+    }
+
+    // fetch event corresponding to this solution
+    const event = await Event.findById(submission.event);
+    if (!event || event === null) {
+      return Promise.reject("Event not found");
+    }
+
+    interface SummaryResponse {
+      score: object;
+    }
+
+    const response = await axios.post<SummaryResponse>(
+      `${FLASK_API}/evaluate/code`,
+      {
+        solution: submission.extractedContent,
+        testCases: event.testCases,
+      }
+    );
+
+    if (response.data && response.data.score) {
+      console.log("Score: ", response.data.score);
+      // await submission.save();
 
       return Promise.resolve("Maths Science Solution evaluated successfully");
     } else {

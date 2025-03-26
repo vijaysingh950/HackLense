@@ -3,7 +3,10 @@ import Event from "@/schema/events";
 import { Event as EventInterface } from "@/types/event";
 import { findUserByEmail } from "@/services/dbService";
 import { UserInTransit } from "@/types/user";
-import { getEventKeywordsService } from "@/services/llmServices";
+import {
+  getEventKeywordsService,
+  generateTestCasesService,
+} from "@/services/llmServices";
 import Submission from "@/schema/submissions";
 
 declare global {
@@ -16,8 +19,6 @@ declare global {
 
 export async function createEvent(req: Request, res: Response) {
   const event: EventInterface = req.body;
-
-  console.log(event);
 
   if (
     !event.title ||
@@ -60,11 +61,15 @@ export async function createEvent(req: Request, res: Response) {
     if (newEvent.subject === "innovation") {
       // generating keywords if event is innovation(hackathon type)
       await getEventKeywordsService("" + newEvent._id);
+    } else if (newEvent.subject === "coding") {
+      // generating test cases if event is coding
+      await generateTestCasesService("" + newEvent._id);
     }
 
     res.status(201).json({ message: "Event created successfully" });
     return;
   } catch (error) {
+    console.log(error);
     res
       .status(500)
       .json({ message: "Internal server error in event creation" });

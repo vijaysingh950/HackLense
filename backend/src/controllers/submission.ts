@@ -12,6 +12,7 @@ import {
   submissionExtractDataService,
   evaluateMathsScienceService,
   translationService,
+  evaluateCodingService,
 } from "@/services/llmServices";
 
 declare global {
@@ -92,6 +93,8 @@ export async function createSubmission(req: Request, res: Response) {
 
       if (event.subject === "mathematics" || event.subject === "science") {
         await evaluateMathsScienceService("" + newSubmission._id);
+      } else if (event.subject === "coding") {
+        await evaluateCodingService("" + newSubmission._id);
       }
 
       return;

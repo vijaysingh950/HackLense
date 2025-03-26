@@ -1,4 +1,6 @@
 import os, re
+import requests
+import time
 from dotenv import load_dotenv
 import json
 import google.generativeai as genai
@@ -87,3 +89,52 @@ class GenericEvaluator:
             test_cases = response
 
         return test_cases
+
+    def run_code(self, params):
+        """Executes the given code with test cases using Judge0 API."""
+
+        print(params)
+
+        try:
+            language_id = 62 # Java 13
+            source_code = params.get('source_code')
+            test_cases = json.loads(params.get('testCases'))  # Ensure test_cases is a list
+
+            print("Test Cases: ", params.get('testCases'))
+
+            passed = 0
+            failed_cases = []
+
+            for case in test_cases:
+                inp, expected = case["input"], case["output"]
+                payload = {
+                    "language_id": language_id,
+                    "source_code": source_code,
+                    "stdin": inp,
+                    "expected_output": expected
+                }
+
+                response = requests.post(f"{self.judge0_url}?base64_encoded=false", json=payload, headers=self.headers)
+                if response.status_code != 201:
+                    return {}
+
+                token = response.json().get("token")
+                result = None
+
+                while result is None or result["status"]["id"] in [1, 2]: 
+                    time.sleep(1)
+                    result = requests.get(f"{self.judge0_url}/{token}", headers=self.headers).json()
+
+                output = result.get("stdout", "").strip()
+                if output == expected:
+                    passed += 1
+                else:
+                    failed_cases.append({"input": inp, "expected": expected, "actual": output})
+
+            return {
+                "passed": passed,
+                "total": len(test_cases),
+                "failed_cases": failed_cases
+            }
+        except Exception as e:
+            return {}

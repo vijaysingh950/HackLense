@@ -13,9 +13,9 @@ const EventSchema = new Schema({
     trim: true,
     maxlength: [500, "Description must not exceed 500 characters"],
   },
-  topic:{
+  topic: {
     type: String,
-    required: true
+    required: true,
   },
   subject: {
     type: String,
@@ -72,6 +72,14 @@ const EventSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  testCases: {
+    type: [
+      {
+        input: mongoose.Schema.Types.Mixed,
+        output: mongoose.Schema.Types.Mixed,
+      },
+    ],
   },
 });
 

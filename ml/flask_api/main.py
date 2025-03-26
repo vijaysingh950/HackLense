@@ -91,6 +91,25 @@ def evaluate_mathsScience():
     except Exception as e:
         print(e)
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/evaluate/code', methods=['POST'])
+def evaluate_code():
+    """API to programming submission for hackathon using Google Generative AI."""
+    try:
+        data = request.get_json()
+
+        if not data or not isinstance(data, dict):
+            return jsonify({"score": 0}), 400
+
+        # Initialize GenericEvaluator and generate content
+        evaluator = GenericEvaluator()
+        generated_content = evaluator.run_code(data)
+
+        return jsonify({"score": generated_content}), 200
+
+    except Exception as e:
+        print(e)
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/generate/keywords', methods=['POST'])
 def generate_keywords():
@@ -129,7 +148,26 @@ def generate_summary():
     except Exception as e:
         print(e)
         return jsonify({"error": str(e)}), 500
-    
+
+@app.route('/generate/testCases', methods=['POST'])
+def generate_testCases():
+    """API to generate test cases for hackathon using Google Generative AI."""
+    try:
+        data = request.get_json()
+
+        if not data or not isinstance(data, dict):
+            return jsonify({"error": "No data provided"}), 400
+
+        # Initialize GenericEvaluator and generate content
+        evaluator = GenericEvaluator()
+        generated_content = evaluator.program(data)
+
+        return jsonify({"testCases": generated_content}), 200
+
+    except Exception as e:
+        print(e)
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/translate', methods=['POST'])
 def translate():
     """API to translate multilungual to english using Google Generative AI."""

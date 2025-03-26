@@ -12,6 +12,7 @@ export interface Event {
   }[];
   keywords: String[];
   submissions: number;
+  testCases?: string[];
   createdBy?: string;
   createdAt: Date;
 }

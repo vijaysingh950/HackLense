@@ -1,6 +1,6 @@
 import os
 from flask import Flask, request, jsonify
-from evaluator import Evaluator
+# from evaluator import Evaluator
 from genericEvaluation.genericEvaluator import GenericEvaluator
 from extraction import process_video, process_audio, process_image, process_text_file
 from dotenv import load_dotenv
@@ -19,24 +19,24 @@ print(f"UPLOAD_FOLDER: {UPLOAD_FOLDER}")
 def home():
     return jsonify({"message": "Hello, Flask!"})
 
-@app.route('/evaluate/innovation', methods=['POST'])
-def evaluate_innovation():
-    try:
-        # Get input JSON from request body
-        data = request.get_json()
+# @app.route('/evaluate/innovation', methods=['POST'])
+# def evaluate_innovation():
+#     try:
+#         # Get input JSON from request body
+#         data = request.get_json()
 
-        if not data or not isinstance(data, dict):
-            return jsonify({"error": "Invalid input, expected a dictionary"}), 400
+#         if not data or not isinstance(data, dict):
+#             return jsonify({"error": "Invalid input, expected a dictionary"}), 400
 
-        # Initialize Evaluator and run evaluation
-        evaluator = Evaluator(data)
-        evaluation_result = evaluator.run()
+#         # Initialize Evaluator and run evaluation
+#         evaluator = Evaluator(data)
+#         evaluation_result = evaluator.run()
 
-        return {"finalScore": evaluation_result["final_score"]}, 200
+#         return {"finalScore": evaluation_result["final_score"]}, 200
 
-    except Exception as e:
-        print(e)
-        return jsonify({"error": str(e)}), 500
+#     except Exception as e:
+#         print(e)
+#         return jsonify({"error": str(e)}), 500
     
 @app.route('/evaluate/LLM', methods=['POST'])
 def evaluate_LLM():

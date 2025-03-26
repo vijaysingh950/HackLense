@@ -8,6 +8,7 @@ export interface Submission {
   extractedContent?: string;
   summary?: string;
   finalScore?: number;
+  defaultParamsScore?: number;
   paramsWise?: string[];
   submittedAt?: Date;
 }

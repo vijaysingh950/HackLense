@@ -351,6 +351,7 @@ export async function evaluateLLMService(submissionId: string) {
 
       submission.finalScore = finalScore;
       submission.paramsWise = result.paramsWise;
+      submission.defaultParamsScore = +result.defaultParamsScore;
 
       await submission.save();
 

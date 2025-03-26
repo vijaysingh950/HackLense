@@ -205,7 +205,7 @@ export async function evaluateCodingService(submissionId: string) {
     }
 
     interface SummaryResponse {
-      score: object;
+      score: number;
     }
 
     const response = await axios.post<SummaryResponse>(
@@ -217,16 +217,16 @@ export async function evaluateCodingService(submissionId: string) {
     );
 
     if (response.data && response.data.score) {
-      console.log("Score: ", response.data.score);
-      // await submission.save();
+      submission.finalScore = response.data.score;
+      await submission.save();
 
-      return Promise.resolve("Maths Science Solution evaluated successfully");
+      return Promise.resolve("Coding Solution evaluated successfully");
     } else {
-      throw new Error("Error in evaluating Maths Science Solution");
+      throw new Error("Error in evaluating Coding Solution");
     }
   } catch (error) {
-    console.error("Error in evaluating Maths Science Solution:", error);
-    return Promise.reject("Error in evaluating Maths Science Solution");
+    console.error("Error in evaluating Coding Solution:", error);
+    return Promise.reject("Error in evaluating Coding Solution");
   }
 }
 

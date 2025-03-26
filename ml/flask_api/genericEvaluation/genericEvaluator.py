@@ -81,7 +81,7 @@ class GenericEvaluator:
 
         ps = params.get("problem_statement")
 
-        response = self.generate(f"Generate exactly 8 test cases for the following computer science problem statement in JSON format. Only return the test cases without any additional explanation or text: {ps}")
+        response = self.generate(f"Generate exactly 10 test cases for the following computer science problem statement in JSON format. Only return the test cases without any additional explanation or text: {ps}")
         
         try:
             test_cases = json.loads(response)
@@ -90,51 +90,25 @@ class GenericEvaluator:
 
         return test_cases
 
-    def run_code(self, params):
-        """Executes the given code with test cases using Judge0 API."""
-
-        print(params)
-
+    def evaluate_code_gemini(self, code: str, test_cases: dict):
+        
+        prompt = f"""
+        You are an expert code evaluator tasked with assessing code against test cases.
+        INSTRUCTIONS:
+        1. Analyze and execute the code provided below
+        2. For each test case in the test_cases_json, determine if the code produces the expected output
+        3. Count the total number of passing test cases
+        4. Respond ONLY with a single integer representing the number of passing test cases
+        5. Modify the code to correct indentation errors, but do not change logic
+        CODE TO EVALUATE:
+        {code}
+        TEST CASES:
+        {test_cases}
+        IMPORTANT: Your response must contain ONLY the number of passing test cases - no explanations, no code, no other text.
+        """
+        
+        response = self.generate(prompt)
         try:
-            language_id = 62 # Java 13
-            source_code = params.get('source_code')
-            test_cases = json.loads(params.get('testCases'))  # Ensure test_cases is a list
-
-            print("Test Cases: ", params.get('testCases'))
-
-            passed = 0
-            failed_cases = []
-
-            for case in test_cases:
-                inp, expected = case["input"], case["output"]
-                payload = {
-                    "language_id": language_id,
-                    "source_code": source_code,
-                    "stdin": inp,
-                    "expected_output": expected
-                }
-
-                response = requests.post(f"{self.judge0_url}?base64_encoded=false", json=payload, headers=self.headers)
-                if response.status_code != 201:
-                    return {}
-
-                token = response.json().get("token")
-                result = None
-
-                while result is None or result["status"]["id"] in [1, 2]: 
-                    time.sleep(1)
-                    result = requests.get(f"{self.judge0_url}/{token}", headers=self.headers).json()
-
-                output = result.get("stdout", "").strip()
-                if output == expected:
-                    passed += 1
-                else:
-                    failed_cases.append({"input": inp, "expected": expected, "actual": output})
-
-            return {
-                "passed": passed,
-                "total": len(test_cases),
-                "failed_cases": failed_cases
-            }
-        except Exception as e:
-            return {}
+            return int(response)
+        except ValueError:
+            print(ValueError)

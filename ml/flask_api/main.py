@@ -98,12 +98,15 @@ def evaluate_code():
     try:
         data = request.get_json()
 
+        codeToSend = data.get("code")
+        testCases = data.get("testCases")
+
         if not data or not isinstance(data, dict):
             return jsonify({"score": 0}), 400
 
         # Initialize GenericEvaluator and generate content
         evaluator = GenericEvaluator()
-        generated_content = evaluator.run_code(data)
+        generated_content = evaluator.evaluate_code_gemini(codeToSend, testCases)
 
         return jsonify({"score": generated_content}), 200
 

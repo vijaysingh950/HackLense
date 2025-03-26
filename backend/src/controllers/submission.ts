@@ -83,7 +83,6 @@ export async function createSubmission(req: Request, res: Response) {
       if (!newSubmission || !updatedEvent) {
         throw new Error("Error in creating submission");
       }
-      res.status(201).json(newSubmission);
 
       await submissionExtractDataService(
         "" + newSubmission._id,

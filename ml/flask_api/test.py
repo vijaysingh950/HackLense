@@ -36,5 +36,24 @@ def test_language():
     # result: "Cleaning the house is a task that many people dislike, but it stops the spread of germs and helps the house look good."
     print(result)
 
+def test_codeEval():
+    params = {
+        "code": "def factorial(n):\n    if n == 0:\n        return 1\n    return n * factorial(n - 1)",
+        "test_cases": [
+            {"input": 1, "expected": 1},
+            {"input": 2, "expected": 2},
+            {"input": 3, "expected": 6},
+            {"input": 4, "expected": 24},
+            {"input": 5, "expected": 120},
+            {"input": 6, "expected": 680},
+            {"input": 7, "expected": 5040},
+            {"input": 8, "expected": 40320},
+            {"input": 9, "expected": 362880},
+            {"input": 10, "expected": 3628800},
+        ]
+    }
+    result = evaluator.evaluate_code_gemini(params["code"], params["test_cases"])
+    print(result)
+
 print("Hello from test.py")
-test_language()
+test_codeEval()

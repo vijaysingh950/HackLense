@@ -16,14 +16,6 @@ import {
   evaluateInnovation,
 } from "@/services/llmServices";
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: UserInTransit;
-    }
-  }
-}
-
 const upload = multer({
   storage: multer.diskStorage({
     destination: path.join(__dirname, "../../../userUploads"),
@@ -55,20 +47,20 @@ export async function createSubmission(req: Request, res: Response) {
     try {
       // validate event
       const event = await Event.findById(submission.event);
-      if (!event || event === null) {
+      if (!event) {
         res.status(404).json({ message: "Event not found" });
         return;
       }
 
       // getting student from cookie
-      const userEmail = req.user?.email;
-      if (!userEmail || userEmail === null) {
+      const userEmail = (req.user as UserInTransit)?.email;
+      if (!userEmail) {
         res.status(404).json({ message: "User not found" });
         return;
       }
 
       const user = await findUserByEmail(userEmail);
-      if (!user || user === null) {
+      if (!user) {
         res.status(404).json({ message: "User not found" });
         return;
       }

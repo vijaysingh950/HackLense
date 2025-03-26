@@ -9,14 +9,6 @@ import {
 } from "@/services/llmServices";
 import Submission from "@/schema/submissions";
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: UserInTransit;
-    }
-  }
-}
-
 export async function createEvent(req: Request, res: Response) {
   const event: EventInterface = req.body;
 
@@ -38,23 +30,22 @@ export async function createEvent(req: Request, res: Response) {
 
   try {
     // Fetching createdBy from the cookie
-    const createdBy = req.user?.email;
-    if (!createdBy || createdBy === null) {
+    const createdBy = (req.user as UserInTransit)?.email;
+    if (!createdBy) {
       res.status(404).json({ message: "User not found" });
       return;
     }
 
     const user = await findUserByEmail(createdBy);
-
-    if (!user || user === null) {
+    if (!user) {
       res.status(404).json({ message: "User not found" });
       return;
     }
 
-    event.createdBy = user._id;
+    event.createdBy = user._id.toString();
 
     const newEvent = await Event.create(event);
-    if (!newEvent || newEvent === null) {
+    if (!newEvent) {
       throw new Error("Error in event creation");
     }
 
@@ -93,8 +84,8 @@ export async function getEvents(req: Request, res: Response) {
 export async function getEventTeacherSpecific(req: Request, res: Response) {
   try {
     // Fetching createdBy from the cookie
-    const createdBy = req.user?.email;
-    if (!createdBy || createdBy === null) {
+    const createdBy = (req.user as UserInTransit)?.email;
+    if (!createdBy) {
       console.log("User not found");
       res.status(404).json({ message: "User not found" });
       return;
@@ -102,7 +93,7 @@ export async function getEventTeacherSpecific(req: Request, res: Response) {
 
     const user = await findUserByEmail(createdBy);
 
-    if (!user || user === null) {
+    if (!user) {
       res.status(404).json({ message: "User not found" });
       return;
     }
@@ -128,7 +119,7 @@ export async function updateEventSubmission(eventId: string): Promise<String> {
 
   try {
     const event = await Event.findById(eventId);
-    if (!event || event === null) {
+    if (!event) {
       return Promise.reject("Event not found");
     }
 
@@ -182,7 +173,7 @@ export async function viewStanding(req: Request, res: Response) {
   try {
     const finalStandings = await getFinalStandings(eventId);
     const event = await Event.findById(eventId);
-    
+
     const filteredStandings = finalStandings.map((standing: any) => ({
       student: standing.student.name,
       finalScore: standing.finalScore,

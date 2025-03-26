@@ -172,7 +172,7 @@ export async function getFinalStandings(req: Request, res: Response) {
         (a: any, b: any) =>
           b.finalScore - a.finalScore ||
           a.submittedAt - b.submittedAt ||
-          a.student.name.localeCompare(b.student.name) // Tie-breaker: Sort by name
+          a._id.toString().localeCompare(b._id.toString()) // Tie-breaker: Random
       );
 
     res.status(200).json(finalStandings || []);

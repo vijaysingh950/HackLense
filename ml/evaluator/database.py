@@ -20,8 +20,8 @@ class DataBase:
     f.close()
     return data.get(parameter)
 
-  def getWeightList(self):
-    f = open(os.path.join(base_dir, "database", "weights.json"), 'r')
+  def getPriorityList(self):
+    f = open(os.path.join(base_dir, "database", "priority.json"), 'r')
     data = json.load(f)
     f.close()
     return data

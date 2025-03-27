@@ -1,4 +1,5 @@
 import os
+import requests
 from flask import Flask, request, jsonify
 # from evaluator import Evaluator
 from genericEvaluation.genericEvaluator import GenericEvaluator
@@ -12,6 +13,8 @@ app = Flask(__name__)
 
 UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER")
 PORT = int(os.getenv("PORT"))
+
+NODEJS_API_URL = "http://localhost:5000" 
 
 print(f"UPLOAD_FOLDER: {UPLOAD_FOLDER}")
 
@@ -205,6 +208,28 @@ def translate():
         generated_content = evaluator.language(data)
 
         return jsonify({"text": generated_content}), 200
+
+    except Exception as e:
+        print(e)
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/parameters', methods=['GET'])
+def get_parameters():
+    """API to get list of parameters for evaluation."""
+    try:
+        event_id = request.args.get("eventId")
+        if not event_id:
+            return jsonify({"error": "Missing eventId parameter"}), 400
+
+        # Send request to Node.js with eventId as a query parameter
+        response = requests.get(f"{NODEJS_API_URL}/parameters", params={"eventId": event_id})
+        
+        # Check if the response is successful
+        if response.status_code == 200:
+            node_data = response.json()
+            return jsonify({"message": "Data fetched successfully", "node_data": node_data})
+        else:
+            return jsonify({"error": f"Node.js backend error: {response.status_code}"}), response.status_code
 
     except Exception as e:
         print(e)
